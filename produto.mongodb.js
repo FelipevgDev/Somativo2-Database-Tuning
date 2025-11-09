@@ -19,7 +19,8 @@ db.produtos.insertMany([
       coordenadas: [-46.6528, -23.5505]
     },
     categoria: {
-      categoriaPrincipal: ObjectId()
+      categoriaPrincipal: ObjectId('6910be737273a6caeb938630'),
+      categoriaSecundaria: ObjectId('6910be737273a6caeb938631')
     },
     promocoes: [{
       percentualDesconto: 10,
@@ -39,7 +40,8 @@ db.produtos.insertMany([
       coordenadas: [-46.6528, -23.5505]
     },
     categoria: {
-      categoriaPrincipal: ObjectId()
+      categoriaPrincipal: ObjectId('6910be737273a6caeb938630'),
+      categoriaSecundaria: ObjectId('6910be737273a6caeb938632')
     },
   }
 ]);

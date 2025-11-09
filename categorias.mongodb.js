@@ -21,10 +21,10 @@ db.categorias.insertMany([
   },
   {
     nome: "Acessórios",
-    nivel: 1
+    nivel: 0
   },
   {
-    nome: "Capas e Cases",
-    nivel: 2
+    nome: "Chaveiro",
+    nivel: 1
   }
 ]);
