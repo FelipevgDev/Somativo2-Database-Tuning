@@ -2,8 +2,56 @@
 const database = 'Somativo';
 use(database);
 
-// Criar coleção
-db.createCollection("produtos");
+// Criar coleção com validação
+db.createCollection("produtos", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["nome", "descricao", "preco", "quantidade", "idVendedor", "localizacao", "categoria"],
+      properties: {
+        nome: { bsonType: "string" },
+        descricao: { bsonType: "string" },
+        preco: { bsonType: ["decimal", "double"] },
+        quantidade: { bsonType: "int", minimum: 0 },
+        idVendedor: { bsonType: "objectId" },
+        localizacao: {
+          bsonType: "object",
+          required: ["tipo", "coordenadas"],
+          properties: {
+            tipo: { enum: ["Point"] },
+            coordenadas: {
+              bsonType: "array",
+              minItems: 2,
+              maxItems: 2,
+              items: { bsonType: "number" }
+            }
+          }
+        },
+        categoria: {
+          bsonType: "object",
+          required: ["categoriaPrincipal"],
+          properties: {
+            categoriaPrincipal: { bsonType: "objectId" },
+            categoriaSecundaria: { bsonType: "objectId" }
+          }
+        },
+        promocoes: {
+          bsonType: "array",
+          items: {
+            bsonType: "object",
+            required: ["percentualDesconto", "dataInicio", "dataFim", "ativo"],
+            properties: {
+              percentualDesconto: { bsonType: "int" },
+              dataInicio: { bsonType: "date" },
+              dataFim: { bsonType: "date" },
+              ativo: { bsonType: "bool" }
+            }
+          }
+        }
+      }
+    }
+  }
+});
 
 // Inserir exemplos
 
@@ -27,7 +75,7 @@ db.produtos.insertMany([
       dataInicio: new Date("2025-11-01"),
       dataFim: new Date("2025-12-01"),
       ativo: true
-    }],
+    }]
   },
   {
     nome: "Notebook ABC",
@@ -43,5 +91,6 @@ db.produtos.insertMany([
       categoriaPrincipal: ObjectId('6910be737273a6caeb938630'),
       categoriaSecundaria: ObjectId('6910be737273a6caeb938632')
     },
+    promocoes: []
   }
 ]);

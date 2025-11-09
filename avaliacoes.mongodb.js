@@ -2,8 +2,30 @@
 const database = 'Somativo';
 use(database);
 
-// Criar coleção
-db.createCollection("avaliacoes");
+// Criar coleção com validação
+db.createCollection("avaliacoes", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["idUsuario", "idProduto", "idTransacao", "nota", "comentario", "dataAvaliacao"],
+      properties: {
+        idUsuario: { bsonType: "objectId" },
+        idProduto: { bsonType: "objectId" },
+        idTransacao: { bsonType: "objectId" },
+        nota: { bsonType: "int", minimum: 1, maximum: 5 },
+        comentario: { bsonType: "string" },
+        respostaVendedor: {
+          bsonType: "object",
+          properties: {
+            reposta: { bsonType: "string" },
+            dataResposta: { bsonType: "date" }
+          }
+        },
+        dataAvaliacao: { bsonType: "date" }
+      }
+    }
+  }
+});
 
 // Inserir exemplos
 
@@ -26,6 +48,7 @@ db.avaliacoes.insertMany([
     idTransacao: db.transacoes.findOne()._id,
     nota: 4,
     comentario: "Produto bom, mas a entrega demorou um pouco.",
+    respostaVendedor: null,
     dataAvaliacao: new Date()
   }
 ]);

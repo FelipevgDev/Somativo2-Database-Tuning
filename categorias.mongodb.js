@@ -2,8 +2,19 @@
 const database = 'Somativo';
 use(database);
 
-// Criar coleção
-db.createCollection("categorias");
+// Criar coleção com validação
+db.createCollection("categorias", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["nome", "nivel"],
+      properties: {
+        nome: { bsonType: "string" },
+        nivel: { bsonType: "int", minimum: 0 }
+      }
+    }
+  }
+});
 
 // Inserir exemplos
 db.categorias.insertMany([

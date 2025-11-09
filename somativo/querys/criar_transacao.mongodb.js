@@ -56,7 +56,7 @@ const subtotal = precoUnitario * quantidadeCompra;
 const total = subtotal - desconto;
 const pontosGanhos = Math.floor(total / 10); // regra: 1 ponto a cada R$10
 
-// 5. Montar documento da transação
+// 5. Montar documento da transação (agora com entrega/endereco obrigatório)
 const transacaoDoc = {
     idUsuario: comprador._id,
     produtos: [{
@@ -69,6 +69,16 @@ const transacaoDoc = {
     pontosFidelidadeGanhos: pontosGanhos,
     metodo: metodoPagamento,
     idTransacao: "TRX" + Date.now(),
+    entrega: {
+        endereco: {
+            rua: comprador.endereco.rua,
+            numero: comprador.endereco.numero,
+            complemento: comprador.endereco.complemento || "",
+            cidade: comprador.endereco.cidade,
+            estado: comprador.endereco.estado,
+            cep: comprador.endereco.cep
+        }
+    },
     dataCompra: new Date()
 };
 
@@ -105,14 +115,8 @@ print("\nProduto após atualização de estoque:");
 printjson(db.produtos.findOne({ _id: produto._id }, { nome: 1, quantidade: 1 }));
 
 print("\nÚltima transação do usuário:");
-db.transacoes.find({ idUsuario: comprador._id }).sort({ dataCompra: -1 }).limit(1).forEach(printjson);
 
 print("\nPontos de fidelidade do usuário:");
 printjson(db.usuarios.findOne({ _id: comprador._id }, { nome: 1, pontosFidelidade: 1 }));
 
-/**
- * Opcional: versão com transação real (requer replica set / MongoDB Atlas):
- * const session = db.getMongo().startSession();
- * session.startTransaction();
- * try { ... session.commitTransaction(); } catch(e){ session.abortTransaction(); }
- */
+// esta voltando "undefined" no resultado do Playground, pois nao esta sendo retornado nada.
