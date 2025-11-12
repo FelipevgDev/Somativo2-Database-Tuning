@@ -62,8 +62,82 @@ db.categorias.insertMany([
     nivel: 1,
     descricao: "Acessórios pequenos e personalizados",
     categoriaPai: db.categorias.findOne({ nome: "Acessórios" })?._id || null
-  }
+  },
+  {
+    nome: "Livros",
+    nivel: 0,
+    descricao: "Categoria de livros em geral",
+    categoriaPai: null
+  },
+  {
+    nome: "Romance",
+    nivel: 1,
+    descricao: "Livros de romance e ficção",
+    categoriaPai: db.categorias.findOne({ nome: "Livros" })?._id || null
+  },
+  {
+    nome: "Aventura",
+    nivel: 1,
+    descricao: "Livros de aventura e ação",
+    categoriaPai: db.categorias.findOne({ nome: "Livros" })?._id || null
+  },
+  {
+    nome: "Roupas",
+    nivel: 0,
+    descricao: "Categoria de roupas em geral",
+    categoriaPai: null
+  },
+  {
+    nome: "Camisetas",
+    nivel: 1,
+    descricao: "Roupas do tipo camiseta",
+    categoriaPai: db.categorias.findOne({ nome: "Roupas" })?._id || null
+  },
+   {
+    nome: "Papelaria",
+    nivel: 0,
+    descricao: "Artigos de papelaria diversos",
+    categoriaPai: null
+  },
+  {
+    nome: "Cadernos",
+    nivel: 1,
+    descricao: "Cadernos de diversos tamanhos e estilos",
+    categoriaPai: db.categorias.findOne({ nome: "Papelaria" })?._id || null
+  },
+  {
+    nome: "Canetas",
+    nivel: 0,
+    descricao: "Categoria de canetas em geral",
+    categoriaPai: db.categorias.findOne({ nome: "Papelaria" })?._id || null
+  },
+  {
+    nome: "Lapiseiras",
+    nivel: 0,
+    descricao: "Categoria de lapiseiras em geral",
+    categoriaPai: db.categorias.findOne({ nome: "Papelaria" })?._id || null
+  },
+    {
+    nome: "Moveis",
+    nivel: 0,
+    descricao: "Móveis diversos para eletrônicos e vestuário",
+    categoriaPai: null
+  },
+  {
+    nome: "Cadeiras",
+    nivel: 1,
+    descricao: "Móveis pequenos e personalizados",
+    categoriaPai: db.categorias.findOne({ nome: "Moveis" })?._id || null
+  },
+  {
+    nome: "Armarios",
+    nivel: 0,
+    descricao: "Categoria de armários em geral",
+    categoriaPai: null
+  },
+  
 ]);
+
 
 // Índices para otimizar consultas
 db.categorias.createIndex({ nome: 1 }, { unique: true });

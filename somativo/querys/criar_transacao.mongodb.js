@@ -11,8 +11,8 @@ use('Somativo');
  */
 
 // ===== Parâmetros da simulação =====
-const nomeProduto = "Notebook ABC";        // Nome do produto a comprar
-const emailComprador = "rafael.mendes@email.com";     // Email do comprador
+const nomeProduto = "Cadeira Ergonômica OfficePro";        // Nome do produto a comprar
+const emailComprador = "carlos.lima@example.com";     // Email do comprador
 const quantidadeCompra = 1;                  // Quantidade desejada
 const metodoPagamento = "credito";          // Método de pagamento
 
