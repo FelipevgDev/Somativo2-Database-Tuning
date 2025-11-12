@@ -11,9 +11,9 @@ use('Somativo');
  */
 
 // ===== Parâmetros da simulação =====
-const nomeProduto = "Smartphone XYZ";        // Nome do produto a comprar
-const emailComprador = "joao@email.com";     // Email do comprador
-const quantidadeCompra = 2;                  // Quantidade desejada
+const nomeProduto = "Notebook ABC";        // Nome do produto a comprar
+const emailComprador = "rafael.mendes@email.com";     // Email do comprador
+const quantidadeCompra = 1;                  // Quantidade desejada
 const metodoPagamento = "credito";          // Método de pagamento
 
 // 1. Buscar produto
@@ -69,6 +69,9 @@ const transacaoDoc = {
     pontosFidelidadeGanhos: pontosGanhos,
     metodo: metodoPagamento,
     idTransacao: "TRX" + Date.now(),
+    // O validador da coleção `transacoes` exige o campo `status`.
+    // Definimos como 'concluido' por padrão — ajuste conforme seu fluxo.
+    status: "concluido",
     entrega: {
         endereco: {
             rua: comprador.endereco.rua,
@@ -84,9 +87,18 @@ const transacaoDoc = {
 
 // 6. Inserir transação
 const insertResult = db.transacoes.insertOne(transacaoDoc);
-if (!insertResult.acknowledged) {
+// Imprimir o objeto de resultado completo para diagnóstico (InsertOneResult)
+print("Resultado do insert:");
+printjson(insertResult);
+if (!insertResult || !insertResult.acknowledged) {
     print("Falha ao inserir transação");
+    // No Playground o comportamento de retorno pode variar; geramos um log adicional.
     quit();
+}
+
+// Garantir que temos insertedId disponível
+if (!insertResult.insertedId) {
+    print("AVISO: insertedId está ausente (undefined). Verifique se há validação na coleção ou erros no ambiente Playground.");
 }
 
 // 7. Atualizar estoque

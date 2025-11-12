@@ -1,8 +1,8 @@
-// Configuração do banco de dados
 const database = 'Somativo';
 use(database);
 
-// Criar coleção com validação
+//db.produtos.drop();
+
 db.createCollection("produtos", {
   validator: {
     $jsonSchema: {
@@ -11,19 +11,19 @@ db.createCollection("produtos", {
       properties: {
         nome: { bsonType: "string" },
         descricao: { bsonType: "string" },
-        preco: { bsonType: ["decimal", "double"] },
+        preco: { bsonType: ["decimal", "double"], minimum: 0 },
         quantidade: { bsonType: "int", minimum: 0 },
         idVendedor: { bsonType: "objectId" },
         localizacao: {
           bsonType: "object",
-          required: ["tipo", "coordenadas"],
+          required: ["type", "coordinates"],
           properties: {
-            tipo: { enum: ["Point"] },
-            coordenadas: {
+            type: { enum: ["Point"] },
+            coordinates: {
               bsonType: "array",
+              items: { bsonType: "double" },
               minItems: 2,
-              maxItems: 2,
-              items: { bsonType: "number" }
+              maxItems: 2
             }
           }
         },
@@ -41,20 +41,20 @@ db.createCollection("produtos", {
             bsonType: "object",
             required: ["percentualDesconto", "dataInicio", "dataFim", "ativo"],
             properties: {
-              percentualDesconto: { bsonType: "int" },
+              percentualDesconto: { bsonType: "int", minimum: 0, maximum: 100 },
               dataInicio: { bsonType: "date" },
               dataFim: { bsonType: "date" },
               ativo: { bsonType: "bool" }
             }
           }
-        }
+        },
+        mediaAvaliacoes: { bsonType: ["double", "null"] }
       }
     }
   }
 });
 
 // Inserir exemplos
-
 db.produtos.insertMany([
   {
     nome: "Smartphone XYZ",
@@ -62,20 +62,20 @@ db.produtos.insertMany([
     preco: NumberDecimal("2499.99"),
     quantidade: 10,
     idVendedor: db.usuarios.findOne({ tipoUsuario: "Vendedor" })._id,
-    localizacao: {
-      tipo: "Point",
-      coordenadas: [-46.6528, -23.5505]
-    },
+    localizacao: { type: "Point", coordinates: [-46.6528, -23.5505] },
     categoria: {
-      categoriaPrincipal: ObjectId('6910be737273a6caeb938630'),
-      categoriaSecundaria: ObjectId('6910be737273a6caeb938631')
+      categoriaPrincipal: ObjectId("6910be737273a6caeb938630"),
+      categoriaSecundaria: ObjectId("6910be737273a6caeb938631")
     },
-    promocoes: [{
-      percentualDesconto: 10,
-      dataInicio: new Date("2025-11-01"),
-      dataFim: new Date("2025-12-01"),
-      ativo: true
-    }]
+    promocoes: [
+      {
+        percentualDesconto: 10,
+        dataInicio: new Date("2025-11-01"),
+        dataFim: new Date("2025-12-01"),
+        ativo: true
+      }
+    ],
+    mediaAvaliacoes: 4.5
   },
   {
     nome: "Notebook ABC",
@@ -83,14 +83,17 @@ db.produtos.insertMany([
     preco: NumberDecimal("4999.99"),
     quantidade: 5,
     idVendedor: db.usuarios.findOne({ tipoUsuario: "Vendedor" })._id,
-    localizacao: {
-      tipo: "Point",
-      coordenadas: [-46.6528, -23.5505]
-    },
+    localizacao: { type: "Point", coordinates: [-46.640, -23.552] },
     categoria: {
-      categoriaPrincipal: ObjectId('6910be737273a6caeb938630'),
-      categoriaSecundaria: ObjectId('6910be737273a6caeb938632')
+      categoriaPrincipal: ObjectId("6910be737273a6caeb938630"),
+      categoriaSecundaria: ObjectId("6910be737273a6caeb938632")
     },
-    promocoes: []
+    promocoes: [],
+    mediaAvaliacoes: null
   }
 ]);
+
+// Índices de produtos
+db.produtos.createIndex({ localizacao: "2dsphere" });
+db.produtos.createIndex({ "categoria.categoriaPrincipal": 1 });
+db.produtos.createIndex({ idVendedor: 1 });
